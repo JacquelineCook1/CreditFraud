@@ -1,5 +1,7 @@
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import precision_score, recall_score, f1_score
+from ANNModel import X_train, X_test, y_train, y_test
+from logisticRegression import run_logistic_regression, plot_comparison, plot_metrics
 
 def run_random_forest(X_train, y_train, X_test, y_test):
     model = RandomForestClassifier(
@@ -27,3 +29,5 @@ def run_random_forest(X_train, y_train, X_test, y_test):
     print("F1 Score:", f1)
 
     return precision, recall, f1
+
+
