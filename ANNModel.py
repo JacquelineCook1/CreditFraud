@@ -14,21 +14,6 @@ import kagglehub
 from kagglehub import KaggleDatasetAdapter
 import os
 
-# # Read in the dataset 
-# df = pd.read_csv('data/creditcard.csv')
-
-# X = df.drop("Class", axis=1)
-# y = df["Class"]
-
-# # Splits data into 80% training and 20% testing
-# X_train, X_test, y_train, y_test, = train_test_split(
-#     X,y,
-#     test_size=0.2,
-#     random_state=42,
-#     stratify=y
-#     )
-# create_sample.py
-
 df = kagglehub.load_dataset(
     KaggleDatasetAdapter.PANDAS,
     "mlg-ulb/creditcardfraud",
@@ -39,6 +24,16 @@ os.makedirs("data", exist_ok=True)
 df.head(1000).to_csv("data/creditcard_sample.csv", index=False)
 
 print(f"Sample saved: {len(df.head(1000))} rows")
+
+# Read in the dataset
+if os.path.exists("data/creditcard.csv"):
+    df = pd.read_csv("data/creditcard.csv")
+    print("Loaded full dataset")
+else:
+    print("Full dataset not found, loading sample...")
+    df = pd.read_csv("data/creditcard_sample.csv")
+
+# run this locally: python create_sample.py
 
 
 #---------------------------------------------------------------------------------------
