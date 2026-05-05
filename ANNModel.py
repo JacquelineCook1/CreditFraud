@@ -33,8 +33,12 @@ else:
     print("Full dataset not found, loading sample...")
     df = pd.read_csv("data/creditcard_sample.csv")
 
-# run this locally: python create_sample.py
+# Split the data into features and target
+X = df.drop('Class', axis=1)
+y = df['Class']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
+# run this locally: python create_sample.py
 
 #---------------------------------------------------------------------------------------
 # build ANN model
