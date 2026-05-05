@@ -21,9 +21,9 @@ df = kagglehub.load_dataset(
 )
 # Save only the first 1000 rows
 os.makedirs("data", exist_ok=True)
-df.head(1000).to_csv("data/creditcard_sample.csv", index=False)
+df.to_csv("data/creditcard_sample.csv", index=False)
 
-print(f"Sample saved: {len(df.head(1000))} rows")
+print(f"Full file saved: {len(df)} rows")
 
 # Read in the dataset
 if os.path.exists("data/creditcard.csv"):
@@ -36,7 +36,7 @@ else:
 # Split the data into features and target
 X = df.drop('Class', axis=1)
 y = df['Class']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
 # run this locally: python create_sample.py
 
@@ -75,7 +75,9 @@ def build_ann_model(X_train, X_test, y_train, y_test):
 
     #Compile model
     model.compile(optimizer="adam", 
-                  metrics=["recall", "precision", "f1_score"], 
+                  metrics=[
+                      tf.keras.metrics.Recall(),
+                      tf.keras.metrics.Precision()], 
                   loss="binary_crossentropy")
     
     early_stop = EarlyStopping(
@@ -87,7 +89,7 @@ def build_ann_model(X_train, X_test, y_train, y_test):
     model.fit(X_train_scaled,
         y_train,
         validation_data=(X_test_scaled, y_test),
-        epochs=5, # change to 100 epochs to really test 
+        epochs=50, # change to 100 epochs to really test 
         batch_size=256,
         class_weight=class_weights,
         callbacks=[early_stop],
