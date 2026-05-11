@@ -1,6 +1,6 @@
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import precision_score, recall_score, f1_score
-from logisticRegression import run_logistic_regression, plot_comparison, plot_metrics
+from logisticRegression import run_logistic_regression, plot_comparison
 from sklearn.model_selection import train_test_split
 
 def run_random_forest(X,y):
