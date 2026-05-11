@@ -47,10 +47,11 @@ if __name__ == "__main__":
     ann_model, ann_scaler, ann_p, ann_r, ann_f1 = build_ann_model(X, y)
     ann_metrics = (ann_p, ann_r, ann_f1)
 
+
     # --- Step 4: Compare Baseline Models ---
     print("\n--- Generating Comparison Plot ---")
     # This sends the collected results to the plotting function
-    plot_comparison(lr_metrics, rf_metrics)
+    plot_comparison(lr_metrics, rf_metrics, ann_metrics)
     
     # Optional: If you want to compare RF vs ANN instead:
     # plot_comparison(rf_metrics, ann_metrics)

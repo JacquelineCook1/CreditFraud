@@ -36,22 +36,18 @@ def run_logistic_regression(X, y):
     # Return these so main.py can capture them in 'lr_metrics'
     return precision, recall, f1
 
-def plot_comparison(lr_metrics, rf_metrics):
-    """
-    Receives two tuples/lists of (p, r, f1) and plots them together.
-    """
+def plot_comparison(lr_metrics, rf_metrics, ann_metrics):
     labels = ['Precision', 'Recall', 'F1 Score']
-    
     x = np.arange(len(labels))
-    width = 0.35  
+    width = 0.25  # Thinner bars to fit three
 
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(12, 6))
   
-    # Create the bars
-    rects1 = ax.bar(x - width/2, lr_metrics, width, label='Logistic Regression', color='#4285F4')
-    rects2 = ax.bar(x + width/2, rf_metrics, width, label='Random Forest', color='#34A853')
-
-    # Add text for labels, title and custom x-axis tick labels, etc.
+    # Centering the bars: One to the left, one in the middle, one to the right
+    rects1 = ax.bar(x - width, lr_metrics, width, label='Logistic Regression', color='#4285F4')
+    rects2 = ax.bar(x, rf_metrics, width, label='Random Forest', color='#34A853')
+    rects3 = ax.bar(x + width, ann_metrics, width, label='ANN Model', color='#FBBC05')
+    
     ax.set_ylabel('Scores')
     ax.set_title('Model Comparison: Credit Fraud Detection')
     ax.set_xticks(x)
@@ -59,12 +55,12 @@ def plot_comparison(lr_metrics, rf_metrics):
     ax.legend()
     ax.set_ylim(0, 1.1)
 
-    # Add value labels on top of bars
-    for rect in rects1 + rects2:
+    # Added + rects3 here so the ANN values also show up on the graph!
+    for rect in rects1 + rects2 + rects3:
         height = rect.get_height()
         ax.annotate(f'{height:.2f}',
                     xy=(rect.get_x() + rect.get_width() / 2, height),
-                    xytext=(0, 3),  # 3 points vertical offset
+                    xytext=(0, 3), 
                     textcoords="offset points",
                     ha='center', va='bottom')
 
