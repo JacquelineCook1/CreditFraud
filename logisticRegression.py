@@ -1,18 +1,20 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
-def run_logistic_regression(X,y):
-# Splits data into 80% training and 20% testing
-    X_train, X_test, y_train, y_test, = train_test_split(
-    X,y,
-    test_size=0.2,
-    random_state=42,
-    stratify=y
+def run_logistic_regression(X, y):
+    """
+    Trains the model and returns the metrics as a tuple.
+    """
+    # Splits data into 80% training and 20% testing
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y,
+        test_size=0.2,
+        random_state=42,
+        stratify=y
     )
 
     # Train the logistic regression model
@@ -21,39 +23,23 @@ def run_logistic_regression(X,y):
 
     y_pred = model.predict(X_test)
 
-    # calculating metrics (precision, recall, f1)
+    # Calculating metrics
     precision = precision_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred)
 
-    print("Logestic Regression Results: ")
-    print("Precision:", precision)
-    print("Recall:", recall)
-    print("F1 Score:", f1)
+    print("Logistic Regression Results: ")
+    print(f"Precision: {precision:.4f}")
+    print(f"Recall: {recall:.4f}")
+    print(f"F1 Score: {f1:.4f}")
 
+    # Return these so main.py can capture them in 'lr_metrics'
     return precision, recall, f1
 
-def plot_metrics(precision, recall, f1):
-    metrics = ['Precision', 'Recall', 'F1 Score']
-    values = [precision, recall, f1]
-    
-    plt.figure(figsize=(8, 6))
-    bars = plt.bar(metrics, values)
-  
-    plt.ylim(0, 1.0)
-    plt.ylabel('Score')
-    plt.title('Logistic Regression Performance')
-
-    for bar in bars:
-        yval = bar.get_height()
-        plt.text(bar.get_x() + bar.get_width()/2, yval + 0.02, round(yval, 2), ha='center', va='bottom')
-
-    plt.show()
-
-    p, r, f = run_logistic_regression(X_train, y_train, X_test, y_test)
-    plot_metrics(p, r, f)
-
 def plot_comparison(lr_metrics, rf_metrics):
+    """
+    Receives two tuples/lists of (p, r, f1) and plots them together.
+    """
     labels = ['Precision', 'Recall', 'F1 Score']
     
     x = np.arange(len(labels))
@@ -61,10 +47,11 @@ def plot_comparison(lr_metrics, rf_metrics):
 
     fig, ax = plt.subplots(figsize=(10, 6))
   
+    # Create the bars
     rects1 = ax.bar(x - width/2, lr_metrics, width, label='Logistic Regression', color='#4285F4')
     rects2 = ax.bar(x + width/2, rf_metrics, width, label='Random Forest', color='#34A853')
 
-    # text for labels
+    # Add text for labels, title and custom x-axis tick labels, etc.
     ax.set_ylabel('Scores')
     ax.set_title('Model Comparison: Credit Fraud Detection')
     ax.set_xticks(x)
@@ -72,5 +59,15 @@ def plot_comparison(lr_metrics, rf_metrics):
     ax.legend()
     ax.set_ylim(0, 1.1)
 
+    # Add value labels on top of bars
+    for rect in rects1 + rects2:
+        height = rect.get_height()
+        ax.annotate(f'{height:.2f}',
+                    xy=(rect.get_x() + rect.get_width() / 2, height),
+                    xytext=(0, 3),  # 3 points vertical offset
+                    textcoords="offset points",
+                    ha='center', va='bottom')
+
     plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
     plt.show()
