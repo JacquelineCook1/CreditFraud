@@ -147,15 +147,21 @@ def build_ann_model(X,y):
     print("Validation recall:", recall[best_idx])
     print("Validation F1:", f1_scores[best_idx])
 
-    # Final test evaluation
+ # Final test evaluation
     test_probs = model.predict(X_test_scaled).ravel()
+    
+    # Apply your tuned threshold
     test_preds = (test_probs >= best_threshold - 0.03).astype(int)
 
-    print("Confusion Matrix Format: [[Legit Labeled Correct, Legit Flagged Fraud], [Missed Fraud, Caught Fraud]]")
-    print(confusion_matrix(y_test, test_preds))
-    print(classification_report(y_test, test_preds, digits=4))
+    # RE-CALCULATE actual test metrics to return to main.py
+    from sklearn.metrics import precision_score, recall_score, f1_score
+    final_p = precision_score(y_test, test_preds)
+    final_r = recall_score(y_test, test_preds)
+    final_f1 = f1_score(y_test, test_preds)
+
+    print("\n--- FINAL TEST RESULTS ---")
+    print(f"Precision: {final_p:.4f}")
+    print(f"Recall: {final_r:.4f}")
+    print(f"F1 Score: {final_f1:.4f}")
     
-    return model, scaler, precision[best_idx], recall[best_idx], f1_scores[best_idx]
-
-#build_ann_model(X,y)  use for testing ANNModel.py independently, but when running from main.py we want to return the model and scaler so we can use them for the comparison plot
-
+    return model, scaler, final_p, final_r, final_f1
