@@ -18,12 +18,14 @@ import kagglehub
 from kagglehub import KaggleDatasetAdapter
 import os
 
+"""" Code used when not running from main.py
 #Import dataset from KaggleHub
 df = kagglehub.load_dataset(
     KaggleDatasetAdapter.PANDAS,
     "mlg-ulb/creditcardfraud",
     "creditcard.csv"
 )
+
 
 os.makedirs("data", exist_ok=True)
 df.to_csv("data/creditcard_sample.csv", index=False)
@@ -37,8 +39,13 @@ df = pd.read_csv("data/creditcard_sample.csv")
 X = df.drop('Class', axis=1)
 y = df['Class']
 
-#Train/test split
-X_train, X_temp, y_train, y_temp = train_test_split(
+"""
+
+#---------------------------------------------------------------------------------------
+# build ANN model
+def build_ann_model(X,y):
+    #Train/test split
+    X_train, X_temp, y_train, y_temp = train_test_split(
     X,
     y, 
     test_size=0.3, 
@@ -46,18 +53,14 @@ X_train, X_temp, y_train, y_temp = train_test_split(
     stratify=y
     )
 
-#Val / test split 
-X_val, X_test, y_val, y_test = train_test_split(
+    #Val / test split 
+    X_val, X_test, y_val, y_test = train_test_split(
     X_temp, y_temp,
     test_size=0.5,
     random_state=42,
     stratify=y_temp
 )
 
-
-#---------------------------------------------------------------------------------------
-# build ANN model
-def build_ann_model(X_train, X_test, y_train, y_test):
     #print('printing til here')
     #Scale data
     scaler = StandardScaler()
@@ -152,7 +155,7 @@ def build_ann_model(X_train, X_test, y_train, y_test):
     print(confusion_matrix(y_test, test_preds))
     print(classification_report(y_test, test_preds, digits=4))
     
-    return model, scaler
+    return model, scaler, precision[best_idx], recall[best_idx], f1_scores[best_idx]
 
-build_ann_model(X_train, X_test, y_train, y_test)
+#build_ann_model(X,y)  use for testing ANNModel.py independently, but when running from main.py we want to return the model and scaler so we can use them for the comparison plot
 
