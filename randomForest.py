@@ -1,5 +1,11 @@
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import precision_score, recall_score, f1_score
+from sklearn.metrics import (
+    precision_score, 
+    recall_score, 
+    f1_score,
+    confusion_matrix,
+    classification_report
+    )
 from logisticRegression import run_logistic_regression, plot_comparison
 from sklearn.model_selection import train_test_split
 
@@ -30,11 +36,28 @@ def run_random_forest(X,y):
     recall = recall_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred)
 
-    # printing results
-    print("Random Forest Results: ")
+   # Calculate metrics
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+
+    # Create confusion matrix
+    cm = confusion_matrix(y_test, y_pred)
+
+    # Print results
+    print("\nRandom Forest Results:")
     print("Precision:", precision)
     print("Recall:", recall)
     print("F1 Score:", f1)
 
-    return precision, recall, f1
+    print("\nConfusion Matrix Format:")
+    print("[[Legit Correct, Legit Flagged Fraud],")
+    print(" [Missed Fraud, Caught Fraud]]")
 
+    print(cm)
+
+    # Optional detailed report
+    print("\nClassification Report:")
+    print(classification_report(y_test, y_pred, digits=4))
+
+    return precision, recall, f1
